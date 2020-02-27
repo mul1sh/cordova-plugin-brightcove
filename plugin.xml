@@ -25,8 +25,8 @@
         <framework src="src/android/ooyala.gradle" custom="true" type="gradleReference" />
 
 		<config-file parent="/*" target="res/xml/config.xml">
-			<feature name="OoyalaPlayer">
-				<param name="android-package" value="cordova_plugin_ooyala.OoyalaPlayer" />
+			<feature name="BrightcovePlayer">
+				<param name="android-package" value="cordova_plugin_brightcove.BrightcovePlayer" />
 				<param name="onload" value="true" />
 			</feature>
 		</config-file>
