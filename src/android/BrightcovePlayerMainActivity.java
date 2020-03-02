@@ -35,7 +35,7 @@ import org.json.JSONObject;
 
 import static java.util.Objects.requireNonNull;
 
-public class BrightcoveMainActivity extends BrightcovePlayerActivity {
+public class BrightcovePlayerMainActivity extends BrightcovePlayerActivity {
 
     private Handler handler = new Handler();
     private Runnable runnable = new Runnable() {

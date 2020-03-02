@@ -44,7 +44,7 @@
 	
 	    </config-file>
 	    <config-file parent="/manifest/application" target="AndroidManifest.xml">			     
-		    <activity android:name="com.plugin.brightcove.BrightcoveMainActivity"
+		    <activity android:name="com.plugin.brightcove.BrightcovePlayerMainActivity"
 		    	      android:theme="@style/AppTheme"
 	                  android:configChanges="keyboardHidden|orientation|screenSize"
 	                  android:launchMode="singleTop">
@@ -63,7 +63,7 @@
 	            android:label="@string/app_name"
 	            android:launchMode="singleTask"
 	            android:theme="@style/Theme.BrightcoveCast"
-	            android:parentActivityName="com.plugin.brightcove.BrightcoveMainActivity">
+	            android:parentActivityName="com.plugin.brightcove.BrightcovePlayerMainActivity">
 	            <intent-filter>
 	                <action android:name="android.intent.action.MAIN"/>
 	            </intent-filter>
