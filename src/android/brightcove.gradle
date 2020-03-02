@@ -1,3 +1,10 @@
+repositories {
+    maven {
+        url 'http://repo.brightcove.com/releases'
+    }
+}
+
+
 android {
     compileSdkVersion 29
     buildToolsVersion "28.0.3"
@@ -23,5 +30,4 @@ dependencies {
 
     // event bus
     implementation 'org.greenrobot:eventbus:3.2.0'
-    
 }
