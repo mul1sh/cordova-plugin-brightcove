@@ -38,15 +38,11 @@ import static java.util.Objects.requireNonNull;
 public class BrightcovePlayerMainActivity extends BrightcovePlayerActivity {
 
     private Handler handler = new Handler();
-    private Runnable runnable = new Runnable() {
-        public void run() {
-            // hide the header
-            requireNonNull(getSupportActionBar()).hide();
-            // hide the controls
-            baseVideoView.getBrightcoveMediaController().hide();
-
-            runnable = this;
-        }
+    private Runnable runnable = () -> {
+        // hide the header
+        requireNonNull(getSupportActionBar()).hide();
+        // hide the controls
+        baseVideoView.getBrightcoveMediaController().hide();
     };
 
     @Override
@@ -61,34 +57,29 @@ public class BrightcovePlayerMainActivity extends BrightcovePlayerActivity {
         setContentView(getResId(this, "layout", "player_layout"));
 
         // Perform the internal wiring to be able to make use of the BrightcovePlayerFragment.
-        baseVideoView = (BrightcoveVideoView) findViewById(R.id.brightcove_video_view);
+        baseVideoView = (BrightcoveVideoView) findViewById(getResId(this, "id", "brightcove_video_view"));
 
         // init the player layout
         final LinearLayout playerLayout = findViewById(getResId(this, "id", "player_layout"));
 
+        // get video params
+        Bundle extras = getIntent().getExtras();
+        String videoId = extras != null ? extras.getString("videoId") : "";
+        String accountId = extras != null ? extras.getString("accountId") : "";
+        String policyId = extras != null ? extras.getString("policyId") : "";
+        String playerTitle = extras != null ? extras.getString("playerTitle") : "";
 
-       /* Bundle extras = getIntent().getExtras();
-        String embedCode = extras.getString("embed_code");
-        String pcode = extras.getString("pcode");
-        String domain = extras.getString("domain");
-        final String playerTitle = extras.getString("playerTitle");*/
-
-
-        String videoId = "6061715761001";
-        String accountId = "6057949435001";
-        String policyId = "BCpkADawqM1-eOnpgGp-rNN4ZxAlRrYsjUIXEIuBFKPQ_Ed2Rdy_mXzY1z8We-tvdVUVtoZwbTjcGlrAIsdwBMXyXtVpZALaLQshKJjoNYwG24zoxFhm_-zbs3cYu4pHTMT3OEfwOGqb01yG";
         Catalog catalog = new Catalog(baseVideoView.getEventEmitter(), accountId, policyId);
-        catalog.findVideoByID(videoId, new VideoListener() {
+
+        catalog.findVideoByID(requireNonNull(videoId), new VideoListener() {
             @Override
             public void onVideo(Video video) {
-
                 String title = video.getName();
                 if (!TextUtils.isEmpty(title)) {
                     requireNonNull(getSupportActionBar()).setTitle(title);
                 } else {
-                    //requireNonNull(getSupportActionBar()).setTitle(playerTitle);
+                    requireNonNull(getSupportActionBar()).setTitle(playerTitle);
                 }
-
                 baseVideoView.add(video);
                 baseVideoView.getEventEmitter().emit(EventType.ENTER_FULL_SCREEN);
             }
@@ -96,31 +87,22 @@ public class BrightcovePlayerMainActivity extends BrightcovePlayerActivity {
 
         EventEmitter eventEmitter = baseVideoView.getEventEmitter();
 
-        eventEmitter.on(EventType.ENTER_FULL_SCREEN, new EventListener() {
-            @Override
-            public void processEvent(Event event) {
-                // listen for touch events
-                playerLayout.setOnTouchListener(new View.OnTouchListener() {
-                    @Override
-                    public boolean onTouch(View v, MotionEvent event){
-                        if(!requireNonNull(getSupportActionBar()).isShowing()){
-                            getSupportActionBar().show();
-                            baseVideoView.getBrightcoveMediaController().show();
-                        }
-                        else hideActionBar();
-                        return true;
-                    }
+        eventEmitter.on(EventType.ENTER_FULL_SCREEN, event -> {
+            // listen for touch events
+            playerLayout.setOnTouchListener((v, event1) -> {
+                if(!requireNonNull(getSupportActionBar()).isShowing()){
+                    getSupportActionBar().show();
+                    baseVideoView.getBrightcoveMediaController().show();
+                }
+                else hideActionBar();
+                return true;
+            });
 
-                });
-
-                // hide the player controls
-                hideActionBar();
-
-                //start playing the video
-                baseVideoView.start();
-            }
+            // hide the player controls
+            hideActionBar();
+            //start playing the video
+            baseVideoView.start();
         });
-
 
         GoogleCastComponent googleCastComponent = new GoogleCastComponent(eventEmitter, this);
         //You can check if there is a session available
@@ -128,11 +110,9 @@ public class BrightcovePlayerMainActivity extends BrightcovePlayerActivity {
         googleCastComponent.setAutoPlay(true);
     }
 
-
     private void hideActionBar(){
         handler.postDelayed(runnable, 3000);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -140,6 +120,7 @@ public class BrightcovePlayerMainActivity extends BrightcovePlayerActivity {
         GoogleCastComponent.setUpMediaRouteButton(this, menu);
         return true;
     }
+
     /**
      * Return a resource identifier for the given resource name.
      *
@@ -153,9 +134,7 @@ public class BrightcovePlayerMainActivity extends BrightcovePlayerActivity {
         String pkgName = context.getPackageName();
         int resId = res.getIdentifier(name, type, pkgName);
         return resId == 0 ? Resources.getSystem().getIdentifier(name, type, "android") : resId;
-
     }
-
 
     @Override
     protected void onDestroy() {
@@ -228,6 +207,5 @@ public class BrightcovePlayerMainActivity extends BrightcovePlayerActivity {
         String playerTag = "brightcove_player_";
         EventBus.getDefault().post(new BrightcovePlayerEvent(playerTag + event.message, args));
     }
-
 
 }

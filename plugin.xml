@@ -13,7 +13,6 @@
         <engine name="cordova-ios" version=">=5.1.1" />
     </engines>
 
-
     <!-- interface -->
 	<js-module name="BrightcovePlayer" src="www/brightcove.js">
 		<clobbers target="BrightcovePlayer" />
@@ -89,13 +88,10 @@
 		<source-file src="src/android/BrightcovePlayer.java" target-dir="src/com/plugin/brightcove" />
 	    <source-file src="src/android/BrightcovePlayerEvent.java" target-dir="src/com/plugin/brightcove" />
 	   
-
 		<!-- set the resources -->
 		<resource-file src="res/android/layout/player_layout.xml" target="res/layout/player_layout.xml" />
         <resource-file src="res/android/values/styles.xml" target="res/values/styles.xml" />
         <resource-file src="res/android/values/colors.xml" target="res/values/colors.xml" />
-        
-
         
 	</platform>
 
