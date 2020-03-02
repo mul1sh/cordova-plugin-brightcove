@@ -41,7 +41,7 @@ public class BrightcovePlayer extends CordovaPlugin {
 
             JSONObject brightcovePlayerArgs = args.getJSONObject(0);
             Context context = cordova.getActivity().getApplicationContext();
-            Intent intent = new Intent(context, BrightcoveMainActivity.class);
+            Intent intent = new Intent(context, BrightcovePlayerMainActivity.class);
             /*intent.putExtra("embed_code", (String) ooyalaPlayerArgs.get("embed_code"));
             intent.putExtra("pcode", (String) ooyalaPlayerArgs.get("pcode"));
             intent.putExtra("domain", (String) ooyalaPlayerArgs.get("domain"));
