@@ -7,11 +7,11 @@
 
     <!-- cordova -->
     <engines>
-        <engine name="cordova" version=">=7.0.0" />
-        <engine name="android-sdk" version=">=18" />
-        <engine name="apple-ios" version=">=8.0" />
-        <engine name="cordova-android" version=">=6.4.0" />
-        <engine name="cordova-ios" version=">=4.5.2" />
+        <engine name="cordova" version=">=9.0.0" />
+        <engine name="android-sdk" version=">=19" />
+        <engine name="apple-ios" version=">=10.0" />
+        <engine name="cordova-android" version=">=8.1.0" />
+        <engine name="cordova-ios" version=">=5.1.1" />
     </engines>
 
 
@@ -22,51 +22,77 @@
     
     <!-- Android -->
 	<platform name="android">
-        <framework src="src/android/ooyala.gradle" custom="true" type="gradleReference" />
+        <framework src="src/android/brightcove.gradle" custom="true" type="gradleReference" />
 
 		<config-file parent="/*" target="res/xml/config.xml">
 			<feature name="BrightcovePlayer">
-				<param name="android-package" value="cordova_plugin_brightcove.BrightcovePlayer" />
+				<param name="android-package" value="com.plugin.brightcove.BrightcovePlayer" />
 				<param name="onload" value="true" />
 			</feature>
 		</config-file>
 		<config-file parent="/manifest" target="AndroidManifest.xml">
-			<uses-permission android:name="android.permission.INTERNET" />
-			<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-			<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>		
+			<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+		    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+		    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+		    <uses-permission android:name="android.permission.INTERNET"/>
+		    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+		    <uses-feature
+		        android:name="android.hardware.wifi"
+		        android:required="true" >
+		    </uses-feature>
+	
 	    </config-file>
 	    <config-file parent="/manifest/application" target="AndroidManifest.xml">			     
-		    <activity android:name="cordova_plugin_ooyala.OoyalaPlayerActivity"
+		    <activity android:name="com.plugin.brightcove.BrightcoveMainActivity"
 		    	      android:theme="@style/AppTheme"
 	                  android:configChanges="keyboardHidden|orientation|screenSize"
 	                  android:launchMode="singleTop">
 	        </activity>         
 
-	         <meta-data
-            android:name="com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME"
-            android:value="cordova_plugin_ooyala.CastOptionsProvider" />
+	        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+	        <meta-data
+	            android:name="com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME"
+	            android:value="com.brightcove.cast.DefaultOptionsProvider" />
+
+	        <activity
+	            android:name="com.brightcove.cast.DefaultExpandedControllerActivity"
+	            android:label="@string/app_name"
+	            android:launchMode="singleTask"
+	            android:theme="@style/Theme.BrightcoveCast"
+	            android:parentActivityName="com.plugin.brightcove.BrightcoveMainActivity">
+	            <intent-filter>
+	                <action android:name="android.intent.action.MAIN"/>
+	            </intent-filter>
+	        </activity>
+	        <meta-data
+	            android:name="com.brightcove.cast.DefaultOptionsProvider.EXPANDED_CONTROLLER_ACTIVITY_CLASS_NAME"
+	            android:value="com.brightcove.cast.DefaultExpandedControllerActivity" />
+	        <meta-data
+	            android:name="com.brightcove.cast.DefaultOptionsProvider.NOTIFICATION_TARGET_ACTIVITY_CLASS_NAME"
+	            android:value="com.brightcove.cast.DefaultExpandedControllerActivity" />
 		
 	    </config-file> 
 	     <!-- set the strings -->
 	    <config-file target="res/values/strings.xml" parent="/*">
-	    	<string name="media_route_menu_title">Play on..</string>
-	    	<string name="loading">Loading..</string>
-		    <string name="castingTo">Casting to %s</string>
+	    	<!-- The application ID for the receiver applicaton. -->
+			<string name="cast_receiver_app_id">425D5D50</string>
+
+			<!-- The text to display on the Chromecast menu title. -->
+			<string name="media_route_menu_title">Play on&#8230;</string>
 		</config-file>
 
 	     <!-- set the java source files-->
-		<source-file src="src/android/OoyalaPlayerActivity.java" target-dir="src/cordova_plugin_ooyala" />
-		<source-file src="src/android/OoyalaPlayer.java" target-dir="src/cordova_plugin_ooyala" />
-	    <source-file src="src/android/OoyalaPlayerEvent.java" target-dir="src/cordova_plugin_ooyala" />
-	    <source-file src="src/android/CastViewManager.java" target-dir="src/cordova_plugin_ooyala" />
-	    <source-file src="src/android/CastOptionsProvider.java" target-dir="src/cordova_plugin_ooyala" />
-
+		<source-file src="src/android/BrightcoveMainPlayerActivity.java" target-dir="src/com/brightcove/plugin" />
+		<source-file src="src/android/BrightcovePlayer.java" target-dir="src/com/brightcove/plugin" />
+	    <source-file src="src/android/BrightcovePlayerEvent.java" target-dir="src/com/brightcove/plugin" />
+	   
 
 		<!-- set the resources -->
-		<resource-file src="res/android/layout/player_simple_layout.xml" 
-			           target="res/layout/player_simple_layout.xml" />
-        <resource-file src="res/android/layout/cast_video_view.xml" target="res/layout/cast_video_view.xml" />
-        <resource-file src="res/android/menu/ooyala_cast_menu.xml" target="res/menu/ooyala_cast_menu.xml" />
+		<resource-file src="res/android/layout/player_layout.xml" target="res/layout/player_layout.xml" />
         <resource-file src="res/android/values/styles.xml" target="res/values/styles.xml" />
         <resource-file src="res/android/values/colors.xml" target="res/values/colors.xml" />
         
@@ -74,85 +100,4 @@
         
 	</platform>
 
-	<!-- iOS -->
-	<platform name="ios">
-		<config-file parent="/*" target="config.xml">
-			<feature name="OoyalaPlayer">
-				<param name="ios-package" value="OoyalaPlayer" />
-				<param name="onload" value="true" />
-			</feature>
-		</config-file>	
-
-
-		<!-- app config -->
-		<config-file target="*-Info.plist" parent="NSAppTransportSecurity">
-			<dict>
-				<key>NSAllowsArbitraryLoads</key>
-				<true/>
-			</dict>
-		</config-file>
-		<config-file target="*-Info.plist" parent="UIViewControllerBasedStatusBarAppearance">
-			<false/>
-		</config-file>
-		
-		<config-file target="*-Info.plist" parent="UIBackgroundModes">
-			<array>
-				<string>audio</string>
-			</array>
-		</config-file>
-     
-		<config-file target="*-Info.plist" parent="UIRequiredDeviceCapabilities">
-			<array>
-				<string>armv7</string>
-			</array>
-		</config-file>
-		<config-file target="*-Info.plist" parent="LSRequiresIPhoneOS">
-			<true/>
-		</config-file>
-		<config-file target="*-Info.plist" parent="UISupportedInterfaceOrientations">
-			<array>
-				<string>UIInterfaceOrientationPortrait</string>
-				<string>UIInterfaceOrientationLandscapeLeft</string>
-				<string>UIInterfaceOrientationLandscapeRight</string>
-			</array>
-		</config-file>
-		<config-file target="*-Info.plist" parent="UISupportedInterfaceOrientations~ipad">
-			<array>
-				<string>UIInterfaceOrientationPortrait</string>
-				<string>UIInterfaceOrientationPortraitUpsideDown</string>
-				<string>UIInterfaceOrientationLandscapeLeft</string>
-				<string>UIInterfaceOrientationLandscapeRight</string>
-			</array>
-		</config-file>
-		<!-- header files -->
-        <header-file src="src/ios/CastPlaybackView.h" />
-		<header-file src="src/ios/OOCastManagerFetcher.h" />
-		<header-file src="src/ios/Utils.h" />
-        <!-- player source files -->
-		<source-file src="src/ios/CastPlaybackView.m" />
-		<source-file src="src/ios/OOCastManagerFetcher.m" />
-		<source-file src="src/ios/OoyalaPlayer.m" />
-		<source-file src="src/ios/Utils.m" />
-
-		<!-- the frameworks -->	
-        <framework src="JavaScriptCore.framework" />
-        <framework src="AVKit.framework" />
-        <framework src="libxml2.tbd" />
-        <framework src="libz.tbd" />
-        <framework src="SystemConfiguration.framework" />
-        <framework src="UIKit.framework" />
-        <framework src="Foundation.framework" />
-        <framework src="CFNetwork.framework" />
-        <framework src="CoreGraphics.framework" />
-        <framework src="CoreMedia.framework" />
-        <framework src="CoreText.framework" />
-        <framework src="MediaAccessibility.framework" />
-        <framework src="MediaPlayer.framework" />
-        <framework src="QuartzCore.framework" />
-        <framework src="Security.framework" />
-        <framework src="src/ios/Frameworks/GoogleCast.framework" embed="true" custom="true"/>
-        <framework src="src/ios/Frameworks/GoogleCast.framework"/>
-        <framework src="src/ios/Frameworks/OoyalaCastSDK.framework" custom="true" />
-        <framework src="src/ios/Frameworks/OoyalaSDK.framework" custom="true" />
-	</platform>
 </plugin>
