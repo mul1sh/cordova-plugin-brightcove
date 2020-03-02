@@ -1,0 +1,39 @@
+{
+  "name": "cordova-plugin-brightcove",
+  "version": "0.0.1",
+  "description": "Cordova Brightcove Player Plugin",
+  "cordova": {
+    "id": "cordova-plugin-brightcove",
+    "platforms": [
+      "android",
+      "ios"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mul1sh/cordova-plugin-brightcove"
+  },
+  "bugs": {
+    "url": "https://github.com/mul1sh/cordova-plugin-brightcove/issues"
+  },
+  "keywords": [
+    "cordova",
+    "plugin",
+    "brightcove",
+    "player",
+    "brightcove-player",
+    "ecosystem:cordova",
+    "cordova-android",
+    "cordova-browser",
+    "cordova-ios",
+    "cordova-osx",
+    "cordova-windows"
+  ],
+  "engines": {
+    "cordovaDependencies": {
+       "9.0.0": { "cordova-android": ">=8.0.0", "cordova-ios": ">=5.1.1"},
+    }
+  },
+  "author": "Mulili Nzuki",
+  "license": "MIT"
+}
