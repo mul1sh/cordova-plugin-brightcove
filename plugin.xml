@@ -85,7 +85,7 @@
 		</config-file>
 
 	     <!-- set the java source files-->
-		<source-file src="src/android/BrightcoveMainPlayerActivity.java" target-dir="src/com/brightcove/plugin" />
+		<source-file src="src/android/BrightcovePlayerMainActivity.java" target-dir="src/com/brightcove/plugin" />
 		<source-file src="src/android/BrightcovePlayer.java" target-dir="src/com/brightcove/plugin" />
 	    <source-file src="src/android/BrightcovePlayerEvent.java" target-dir="src/com/brightcove/plugin" />
 	   
