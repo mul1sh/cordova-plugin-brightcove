@@ -11,17 +11,15 @@ import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MotionEvent;
-import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.MediaController;
 
 import com.brightcove.player.appcompat.BrightcovePlayerActivity;
 import com.brightcove.player.edge.Catalog;
 import com.brightcove.player.edge.VideoListener;
-import com.brightcove.player.event.Event;
 import com.brightcove.player.event.EventEmitter;
-import com.brightcove.player.event.EventListener;
 import com.brightcove.player.event.EventType;
+import com.brightcove.player.mediacontroller.BrightcoveMediaController;
 import com.brightcove.player.model.Video;
 import com.brightcove.player.view.BrightcoveVideoView;
 import com.brightcove.cast.GoogleCastComponent;
@@ -44,6 +42,8 @@ public class BrightcovePlayerMainActivity extends BrightcovePlayerActivity {
         // hide the controls
         baseVideoView.getBrightcoveMediaController().hide();
     };
+
+    private BrightcoveMediaController mediaController = null;
 
     @Override
     @SuppressLint("ClickableViewAccessibility")
@@ -87,9 +87,21 @@ public class BrightcovePlayerMainActivity extends BrightcovePlayerActivity {
 
         EventEmitter eventEmitter = baseVideoView.getEventEmitter();
 
+        eventEmitter.on(EventType.DID_REMOVE_VIDEO_STILL, event -> {
+             // reset the media controller
+             baseVideoView.setMediaController(mediaController);
+             // hide the player controls
+             hideActionBar();
+        });
+
+
         eventEmitter.on(EventType.ENTER_FULL_SCREEN, event -> {
+
+            mediaController = baseVideoView.getBrightcoveMediaController();
+            baseVideoView.setMediaController((MediaController)null);
+
             // listen for touch events
-            playerLayout.setOnTouchListener((v, event1) -> {
+            playerLayout.setOnTouchListener((view, motionEvent) -> {
                 if(!requireNonNull(getSupportActionBar()).isShowing()){
                     getSupportActionBar().show();
                     baseVideoView.getBrightcoveMediaController().show();
@@ -98,8 +110,6 @@ public class BrightcovePlayerMainActivity extends BrightcovePlayerActivity {
                 return true;
             });
 
-            // hide the player controls
-            hideActionBar();
             //start playing the video
             baseVideoView.start();
         });
@@ -110,9 +120,7 @@ public class BrightcovePlayerMainActivity extends BrightcovePlayerActivity {
         googleCastComponent.setAutoPlay(true);
     }
 
-    private void hideActionBar(){
-        handler.postDelayed(runnable, 3000);
-    }
+    private void hideActionBar(){ handler.postDelayed(runnable, 3000); }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -180,6 +188,16 @@ public class BrightcovePlayerMainActivity extends BrightcovePlayerActivity {
         if (event.message.equals("pause_player")) {
             if (baseVideoView != null) {
                 baseVideoView.pause();
+                handlePlayerEvents(event, event.message + ", success ");
+            } else {
+                JSONObject eventArgs = new JSONObject("{'errorMessage':'player is null'}");
+                EventBus.getDefault().post(new BrightcovePlayerEvent("player_error", eventArgs));
+            }
+        }
+
+        if (event.message.equals("resume_player")) {
+            if (baseVideoView != null) {
+                baseVideoView.start();
                 handlePlayerEvents(event, event.message + ", success ");
             } else {
                 JSONObject eventArgs = new JSONObject("{'errorMessage':'player is null'}");
